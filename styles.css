@@ -48,6 +48,46 @@ body {
     color: #4a5568;
 }
 
+.import-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+    border-radius: 15px;
+    border: 2px solid #4fd1c7;
+}
+
+.import-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.import-btn {
+    background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(79, 209, 199, 0.3);
+}
+
+.import-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(79, 209, 199, 0.4);
+}
+
+.import-help {
+    font-size: 0.9rem;
+    color: #2d3748;
+    text-align: center;
+    opacity: 0.8;
+}
+
 .card-pairs-container {
     display: flex;
     flex-direction: column;
@@ -398,4 +438,3 @@ body {
         font-size: 0.9rem;
     }
 }
-

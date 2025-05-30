@@ -15,6 +15,15 @@
         <div class="game-builder" id="builder">
             <div class="builder-section">
                 <h2>📝 Додайте пари питань та відповідей</h2>
+                <div class="import-section">
+                    <div class="import-options">
+                        <button class="import-btn" onclick="document.getElementById('ankiFileInput').click()">
+                            📥 Завантажити Anki картки
+                        </button>
+                        <input type="file" id="ankiFileInput" accept=".txt,.csv" style="display: none;" onchange="gameBuilder.importAnkiCards(this)">
+                        <span class="import-help">Підтримуються файли .txt та .csv з експорту Anki</span>
+                    </div>
+                </div>
                 <div class="card-pairs-container" id="cardPairs">
                     <!-- Card pairs will be added here -->
                 </div>

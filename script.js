@@ -109,6 +109,108 @@ class MemoryGameBuilder {
         }
     }
 
+    importAnkiCards(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const content = e.target.result;
+                const pairs = this.parseAnkiFile(content, file.name);
+                
+                if (pairs.length === 0) {
+                    alert('Не вдалося знайти валідні пари карток у файлі. Перевірте формат файлу.');
+                    return;
+                }
+
+                // Clear existing pairs and add imported ones
+                this.cardPairs = [];
+                document.getElementById('cardPairs').innerHTML = '';
+                
+                pairs.forEach(pair => {
+                    const cardPair = {
+                        id: Date.now() + Math.random(),
+                        question: pair.question,
+                        answer: pair.answer
+                    };
+                    this.cardPairs.push(cardPair);
+                    this.renderCardPair(cardPair);
+                });
+
+                this.updateStartButton();
+                alert(`Успішно завантажено ${pairs.length} пар карток!`);
+                
+            } catch (error) {
+                console.error('Error importing Anki cards:', error);
+                alert('Помилка при завантаженні файлу. Перевірте формат файлу.');
+            }
+        };
+        
+        reader.readAsText(file, 'UTF-8');
+        input.value = ''; // Reset input
+    }
+
+    parseAnkiFile(content, fileName) {
+        const pairs = [];
+        const lines = content.split('\n').filter(line => line.trim());
+        
+        if (fileName.endsWith('.csv') || content.includes('\t')) {
+            // Parse CSV or TSV format
+            lines.forEach(line => {
+                const columns = line.split(/\t|,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+                if (columns.length >= 2) {
+                    const question = this.cleanText(columns[0]);
+                    const answer = this.cleanText(columns[1]);
+                    if (question && answer) {
+                        pairs.push({ question, answer });
+                    }
+                }
+            });
+        } else {
+            // Parse plain text format (question/answer pairs separated by empty lines)
+            let currentQuestion = '';
+            let currentAnswer = '';
+            let isAnswer = false;
+            
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed === '') {
+                    if (currentQuestion && currentAnswer) {
+                        pairs.push({
+                            question: currentQuestion,
+                            answer: currentAnswer
+                        });
+                    }
+                    currentQuestion = '';
+                    currentAnswer = '';
+                    isAnswer = false;
+                } else if (!isAnswer) {
+                    currentQuestion = trimmed;
+                    isAnswer = true;
+                } else {
+                    currentAnswer = trimmed;
+                }
+            });
+            
+            // Add last pair if exists
+            if (currentQuestion && currentAnswer) {
+                pairs.push({
+                    question: currentQuestion,
+                    answer: currentAnswer
+                });
+            }
+        }
+        
+        return pairs;
+    }
+
+    cleanText(text) {
+        if (!text) return '';
+        // Remove quotes and extra whitespace
+        return text.replace(/^["']|["']$/g, '').trim();
+    }
+
     startGame() {
         const validPairs = this.cardPairs.filter(pair => 
             pair.question.trim() && pair.answer.trim()
@@ -328,4 +430,3 @@ function restartGame() {
 document.addEventListener('DOMContentLoaded', () => {
     gameBuilder = new MemoryGameBuilder();
 });
-
