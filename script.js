@@ -155,8 +155,17 @@ class MemoryGameBuilder {
         const pairs = [];
         const lines = content.split('\n').filter(line => line.trim());
         
-        if (fileName.endsWith('.csv') || content.includes('\t')) {
-            // Parse CSV or TSV format
+        if (lines.some(line => line.includes(';'))) {
+            lines.forEach(line => {
+                const parts = line.split(';').map(part => this.cleanText(part));
+                if (parts.length >= 2 && parts[0] && parts[1]) {
+                    pairs.push({
+                        question: parts[0],
+                        answer: parts[1]
+                    });
+                }
+            });
+        } else if (fileName.endsWith('.csv') || content.includes('\t')) {
             lines.forEach(line => {
                 const columns = line.split(/\t|,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
                 if (columns.length >= 2) {
@@ -168,7 +177,6 @@ class MemoryGameBuilder {
                 }
             });
         } else {
-            // Parse plain text format (question/answer pairs separated by empty lines)
             let currentQuestion = '';
             let currentAnswer = '';
             let isAnswer = false;
@@ -193,7 +201,6 @@ class MemoryGameBuilder {
                 }
             });
             
-            // Add last pair if exists
             if (currentQuestion && currentAnswer) {
                 pairs.push({
                     question: currentQuestion,
@@ -207,7 +214,6 @@ class MemoryGameBuilder {
 
     cleanText(text) {
         if (!text) return '';
-        // Remove quotes and extra whitespace
         return text.replace(/^["']|["']$/g, '').trim();
     }
 
@@ -223,7 +229,6 @@ class MemoryGameBuilder {
 
         this.gameCards = [];
         
-        // Create cards for each pair
         validPairs.forEach((pair, index) => {
             this.gameCards.push({
                 id: `q_${index}`,
@@ -242,21 +247,17 @@ class MemoryGameBuilder {
             });
         });
 
-        // Shuffle cards
         this.shuffleArray(this.gameCards);
         
-        // Reset game state
         this.flippedCards = [];
         this.matchedPairs = 0;
         this.attempts = 0;
         this.isGameActive = true;
         
-        // Show game area
         document.getElementById('builder').style.display = 'none';
         document.getElementById('gameArea').style.display = 'block';
         document.getElementById('gameResults').style.display = 'none';
         
-        // Update UI
         this.updateGameUI();
         this.renderGameCards();
         this.startTimer();
@@ -306,7 +307,6 @@ class MemoryGameBuilder {
             return;
         }
         
-        // Flip the card
         cardElement.classList.add('flipped');
         this.flippedCards.push(card);
         
@@ -324,7 +324,6 @@ class MemoryGameBuilder {
         const [card1, card2] = this.flippedCards;
         
         if (card1.pairId === card2.pairId) {
-            // Match found
             card1.matched = true;
             card2.matched = true;
             
@@ -340,7 +339,6 @@ class MemoryGameBuilder {
                 this.endGame();
             }
         } else {
-            // No match, flip cards back
             const card1Element = document.querySelector(`[data-card-id="${card1.id}"]`);
             const card2Element = document.querySelector(`[data-card-id="${card2.id}"]`);
             
@@ -403,7 +401,6 @@ class MemoryGameBuilder {
     }
 }
 
-// Global functions for HTML onclick handlers
 let gameBuilder;
 
 function addCardPair() {
@@ -426,7 +423,6 @@ function restartGame() {
     gameBuilder.restartGame();
 }
 
-// Initialize the game when page loads
 document.addEventListener('DOMContentLoaded', () => {
     gameBuilder = new MemoryGameBuilder();
 });
