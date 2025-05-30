@@ -1,0 +1,65 @@
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🧠 Memory Game Builder</h1>
+            <p>Створіть свою власну гру на запам'ятовування з питаннями та відповідями</p>
+        </header>
+
+        <div class="game-builder" id="builder">
+            <div class="builder-section">
+                <h2>📝 Додайте пари питань та відповідей</h2>
+                <div class="card-pairs-container" id="cardPairs">
+                    <!-- Card pairs will be added here -->
+                </div>
+                <button class="add-pair-btn" onclick="addCardPair()">
+                    ➕ Додати пару карт
+                </button>
+            </div>
+
+            <div class="game-controls">
+                <button class="start-game-btn" onclick="startGame()" id="startBtn" disabled>
+                    🎮 Почати гру
+                </button>
+                <button class="reset-btn" onclick="resetBuilder()">
+                    🔄 Скинути все
+                </button>
+            </div>
+        </div>
+
+        <div class="game-area" id="gameArea" style="display: none;">
+            <div class="game-header">
+                <div class="game-info">
+                    <span>Пари: <span id="score">0</span> / <span id="totalPairs">0</span></span>
+                    <span>Спроби: <span id="attempts">0</span></span>
+                    <span>Час: <span id="timer">00:00</span></span>
+                </div>
+                <button class="back-btn" onclick="backToBuilder()">← Назад до редактора</button>
+            </div>
+            <div class="memory-grid" id="memoryGrid">
+                <!-- Game cards will be generated here -->
+            </div>
+            <div class="game-results" id="gameResults" style="display: none;">
+                <h2>🎉 Гру завершено!</h2>
+                <div class="results-stats">
+                    <p>Час: <span id="finalTime"></span></p>
+                    <p>Спроби: <span id="finalAttempts"></span></p>
+                    <p>Точність: <span id="accuracy"></span>%</p>
+                </div>
+                <div class="results-actions">
+                    <button onclick="restartGame()">🔄 Грати знову</button>
+                    <button onclick="backToBuilder()">📝 Редагувати картки</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
